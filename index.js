@@ -23,6 +23,7 @@ client.on("warn", (m) => logger.log("warn", m));
 client.on("error", (m) => logger.log("error", m));
 
 // Command Handler
+const cooldowns = new Discord.Collection();
 client.commands = new Discord.Collection();
 
 const commandFiles = fs
@@ -35,9 +36,9 @@ for (const file of commandFiles) {
 }
 
 client.on("message", (message) => {
-  if (!message.content.startsWith(prefix) || message.author.bot) return;
+  if (!message.content.startsWith(PREFIX) || message.author.bot) return;
 
-  const args = message.content.slice(prefix.length).trim().split(/ +/);
+  const args = message.content.slice(PREFIX.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
 
   const command =
