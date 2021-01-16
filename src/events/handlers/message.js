@@ -1,14 +1,47 @@
 const Discord = require("discord.js");
 
+const AntiSpam = require("discord-anti-spam");
+
+const antiSpam = new AntiSpam({
+  warnThreshold: 3,
+  kickThreshold: 7,
+  banThreshold: 7,
+  maxInterval: 2000,
+  warnMessage: "{@user}, Please stop spamming.",
+  kickMessage: "**{user_tag}** has been kicked for spamming.",
+  banMessage: "**{user_tag}** has been banned for spamming.",
+  maxDuplicatesWarning: 7,
+  maxDuplicatesKick: 10,
+  maxDuplicatesBan: 12,
+  exemptPermissions: ["ADMINISTRATOR"],
+  ignoreBots: true,
+  verbose: true,
+  ignoredUsers: [],
+});
+
 module.exports = async (Client, message) => {
   //always return bot so db doesnt get queried twice
   if (message.author.bot) return;
+
+  // Anti spam
+  antiSpam.message(message);
 
   // Get guild settings
   const guildSettings = await Client.getGuild(message.guild.id);
 
   //This shouldn't happen as guild is made on guildCreate event -- but just incase
   if (!guildSettings) Client.makeGuild(message.guild.id);
+
+  // Check for discord invite
+  if (
+    Client.regex.test(message.content) &&
+    guildSettings.settings.blockInvites &&
+    message.deletable
+  ) {
+    await message.delete();
+
+    return message.say("No invites!");
+  }
 
   // Set prefix
   const PREFIX = guildSettings ? guildSettings.settings.prefix : Client.defaultPrefix;
@@ -43,33 +76,6 @@ module.exports = async (Client, message) => {
 
     return message.channel.send(reply);
   }
-
-  // Check if user has cooldown
-  if (!Client.cooldowns.has(command.name)) {
-    Client.cooldowns.set(command.name, new Discord.Collection());
-  }
-
-  // Add cooldown command based
-  const now = Date.now();
-  const timestamps = Client.cooldowns.get(command.name);
-  const cooldownAmount = (command.cooldown || 3) * 1000;
-
-  if (timestamps.has(message.author.id)) {
-    const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
-
-    if (now < expirationTime) {
-      const timeLeft = (expirationTime - now) / 1000;
-      return message.reply(
-        `please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${
-          command.name
-        }\` command.`
-      );
-    }
-  }
-
-  // Set cooldown
-  timestamps.set(message.author.id, now);
-  setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
   // Level stuff
   const randomAmountOfXp = Math.floor(Math.random() * 29) + 1; // Min 1, Max 30
