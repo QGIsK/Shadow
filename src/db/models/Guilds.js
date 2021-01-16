@@ -23,7 +23,10 @@ const GuildSettingsSchema = mongoose.Schema({
         default: false,
       },
     },
-    
+    bockInvites: {
+      type: Boolean,
+      default: false,
+    },
   },
 });
 
