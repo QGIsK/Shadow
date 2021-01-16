@@ -18,6 +18,7 @@ async function start() {
   Client.defaultPrefix = DEFAULT_PREFIX;
   Client.inviteLink = INVITE;
   Client.Levels = Levels;
+  Client.regex = /(https?:\/\/)?(www\.)?(discord\.(gg|io|me|li|club)|discordapp\.com\/invite|discord\.com\/invite)\/.+[a-z]/gi;
 
   // Command Handler
   Client.cooldowns = new Discord.Collection();
