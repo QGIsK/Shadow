@@ -2,48 +2,40 @@
 
 require("dotenv").config();
 
-const { CommandoClient } = require("discord.js-commando");
-const path = require("path");
+const Discord = require("discord.js");
+const fs = require("fs");
 
-const { OWNER, DEFAULT_PREFIX, BOT_TOKEN, INVITE, MONGO_URI } = process.env;
+const Client = new Discord.Client();
 
-const Client = new CommandoClient({
-  commandPrefix: DEFAULT_PREFIX,
-  owner: OWNER,
-  invite: INVITE,
-});
+const { OWNER, DEFAULT_PREFIX, BOT_TOKEN, INVITE } = process.env;
 
-const MessageHandler = require("./handlers/message");
+async function start() {
+  Client.DB = require("./db/");
+  Client.logger = require("./utils/Logger");
+  Client.owner = OWNER;
+  Client.defaultPrefix = DEFAULT_PREFIX;
+  Client.inviteLink = INVITE;
 
-Client.db = require("./db/");
-Client.logger = require("./utils/Logger");
+  // Command Handler
+  Client.cooldowns = new Discord.Collection();
+  Client.commands = new Discord.Collection();
 
-Client.registry
-  // Registers your custom command groups
-  .registerGroups([])
+  const commandFiles = fs
+    .readdirSync("./src/commands")
+    .filter((file) => file.endsWith(".js"));
 
-  // Registers all built-in groups, commands, and argument types
-  .registerDefaults()
+  for (const file of commandFiles) {
+    const command = require(`./commands/${file}`);
+    Client.commands.set(command.name, command);
+  }
 
-  // Registers all of your commands in the ./commands/ directory
-  .registerCommandsIn(path.join(__dirname, "commands"));
+  require("./utils/Guild")(Client);
+  require("./events")(Client);
 
-Client.on("message", (message) =>
-  require("./handlers/message")(Client, message)
-);
+  Client.login(BOT_TOKEN);
+}
 
-Client.on("disconnect", () =>
-  Client.logger.log("Bot is disconnecting...", "warn")
-)
-  .on("ready", () => {
-    Client.logger.log("Bot is online", "log");
-    require("./dashboard/")(Client);
-  })
-  .on("reconnecting", () => Client.logger.log("Bot reconnecting...", "log"))
-  .on("error", (e) => Client.logger.log(e, "error"))
-  .on("warn", (info) => Client.logger.log(info, "warn"));
-
-Client.login(BOT_TOKEN);
+start();
 
 process.on("unhandledRejection", (err) => {
   console.error(err);
