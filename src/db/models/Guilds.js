@@ -10,6 +10,20 @@ const GuildSettingsSchema = mongoose.Schema({
       type: String,
       default: DEFAULT_PREFIX,
     },
+    thankBoosters: {
+      type: Boolean,
+      default: false,
+    },
+    welcomeMessage: {
+      channel: {
+        type: String,
+      },
+      enabled: {
+        type: Boolean,
+        default: false,
+      },
+    },
+    
   },
 });
 
