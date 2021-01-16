@@ -30,6 +30,10 @@ module.exports = async (Client, message) => {
     return message.reply("I can't execute that command inside DMs!");
   }
 
+  // Check if command if creator only and author isnt creator
+  if (command.creatorOnly && message.author.id !== Client.creator)
+    return message.channel.send("This command is only for the creator.");
+
   if (command.args && !args.length) {
     let reply = `You didn't provide any arguments, ${message.author}!`;
 
@@ -67,9 +71,24 @@ module.exports = async (Client, message) => {
   timestamps.set(message.author.id, now);
   setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
+  // Level stuff
+  const randomAmountOfXp = Math.floor(Math.random() * 29) + 1; // Min 1, Max 30
+  const hasLeveledUp = await Client.Levels.appendXp(
+    message.author.id,
+    message.guild.id,
+    randomAmountOfXp
+  );
+
+  if (hasLeveledUp) {
+    const user = await Client.Levels.fetch(message.author.id, message.guild.id);
+    message.channel.send(
+      `${message.author}, congratulations! You have leveled up to **${user.level}**. :tada:`
+    );
+  }
+
   // Exectue command or fail
   try {
-    command.execute(message, args);
+    command.execute(Client, message, args);
   } catch (error) {
     console.error(error);
     message.reply("there was an error trying to execute that command!");
