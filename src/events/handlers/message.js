@@ -4,9 +4,7 @@ module.exports = async (Client, message) => {
   const guildSettings = await Client.getGuild(message.guild.id);
   if (!guildSettings) Client.makeGuild(message.guild.id);
 
-  const PREFIX = guildSettings
-    ? guildSettings.settings.prefix
-    : Client.defaultPrefix;
+  const PREFIX = guildSettings ? guildSettings.settings.prefix : Client.defaultPrefix;
 
   if (!message.content.startsWith(PREFIX) || message.author.bot) return;
 
@@ -15,9 +13,7 @@ module.exports = async (Client, message) => {
 
   const command =
     Client.commands.get(commandName) ||
-    Client.commands.find(
-      (cmd) => cmd.aliases && cmd.aliases.includes(commandName)
-    );
+    Client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
   if (!command) return;
 
@@ -49,9 +45,9 @@ module.exports = async (Client, message) => {
     if (now < expirationTime) {
       const timeLeft = (expirationTime - now) / 1000;
       return message.reply(
-        `please wait ${timeLeft.toFixed(
-          1
-        )} more second(s) before reusing the \`${command.name}\` command.`
+        `please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${
+          command.name
+        }\` command.`
       );
     }
   }

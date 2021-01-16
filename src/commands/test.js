@@ -9,11 +9,12 @@ module.exports = {
       );
     }
 
-    const avatarList = message.mentions.users.map((user) => {
-      return `${user.username}'s avatar: <${user.displayAvatarURL({
-        dynamic: true,
-      })}>`;
-    });
+    const avatarList = message.mentions.users.map(
+      user =>
+        `${user.username}'s avatar: <${user.displayAvatarURL({
+          dynamic: true,
+        })}>`
+    );
 
     message.channel.send(avatarList);
   },

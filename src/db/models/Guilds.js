@@ -10,7 +10,6 @@ const GuildSettingsSchema = mongoose.Schema({
       type: String,
       default: DEFAULT_PREFIX,
     },
-    
   },
 });
 

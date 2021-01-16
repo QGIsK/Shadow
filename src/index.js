@@ -1,5 +1,3 @@
-"use strict";
-
 require("dotenv").config();
 
 const Discord = require("discord.js");
@@ -10,7 +8,7 @@ const Client = new Discord.Client();
 const { OWNER, DEFAULT_PREFIX, BOT_TOKEN, INVITE } = process.env;
 
 async function start() {
-  Client.DB = require("./db/");
+  Client.DB = require("./db");
   Client.logger = require("./utils/Logger");
   Client.owner = OWNER;
   Client.defaultPrefix = DEFAULT_PREFIX;
@@ -20,9 +18,7 @@ async function start() {
   Client.cooldowns = new Discord.Collection();
   Client.commands = new Discord.Collection();
 
-  const commandFiles = fs
-    .readdirSync("./src/commands")
-    .filter((file) => file.endsWith(".js"));
+  const commandFiles = fs.readdirSync("./src/commands").filter(file => file.endsWith(".js"));
 
   for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
@@ -37,6 +33,6 @@ async function start() {
 
 start();
 
-process.on("unhandledRejection", (err) => {
+process.on("unhandledRejection", err => {
   console.error(err);
 });

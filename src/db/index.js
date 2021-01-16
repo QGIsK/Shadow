@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const logger = require("../utils/Logger");
+
 const { MONGO_URI } = process.env;
 
 mongoose
@@ -8,8 +9,8 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then((_) => logger.log("MongoDB connected", "log"))
-  .catch((e) => {
+  .then(_ => logger.log("MongoDB connected", "log"))
+  .catch(e => {
     Client.logger.log(e, "error");
     process.exit(1);
   });
