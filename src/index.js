@@ -4,15 +4,20 @@ const Discord = require("discord.js");
 const fs = require("fs");
 
 const Client = new Discord.Client();
+const Levels = require("discord-xp");
 
-const { OWNER, DEFAULT_PREFIX, BOT_TOKEN, INVITE } = process.env;
+const { CREATOR, DEFAULT_PREFIX, BOT_TOKEN, INVITE, MONGO_URI } = process.env;
 
 async function start() {
+  Levels.setURL(MONGO_URI);
+
+  //Client utils & variables
   Client.DB = require("./db");
   Client.logger = require("./utils/Logger");
-  Client.owner = OWNER;
+  Client.creator = CREATOR;
   Client.defaultPrefix = DEFAULT_PREFIX;
   Client.inviteLink = INVITE;
+  Client.Levels = Levels;
 
   // Command Handler
   Client.cooldowns = new Discord.Collection();
