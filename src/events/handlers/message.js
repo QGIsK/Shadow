@@ -1,13 +1,22 @@
 const Discord = require("discord.js");
 
 module.exports = async (Client, message) => {
+  //always return bot so db doesnt get queried twice
+  if (message.author.bot) return;
+
+  // Get guild settings
   const guildSettings = await Client.getGuild(message.guild.id);
+
+  //This shouldn't happen as guild is made on guildCreate event -- but just incase
   if (!guildSettings) Client.makeGuild(message.guild.id);
 
+  // Set prefix
   const PREFIX = guildSettings ? guildSettings.settings.prefix : Client.defaultPrefix;
 
-  if (!message.content.startsWith(PREFIX) || message.author.bot) return;
+  // if msg doesnt start with prefix return
+  if (!message.content.startsWith(PREFIX)) return;
 
+  // Splice arguments and get first arg for command
   const args = message.content.slice(PREFIX.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
 
@@ -31,10 +40,12 @@ module.exports = async (Client, message) => {
     return message.channel.send(reply);
   }
 
+  // Check if user has cooldown
   if (!Client.cooldowns.has(command.name)) {
     Client.cooldowns.set(command.name, new Discord.Collection());
   }
 
+  // Add cooldown command based
   const now = Date.now();
   const timestamps = Client.cooldowns.get(command.name);
   const cooldownAmount = (command.cooldown || 3) * 1000;
@@ -52,9 +63,11 @@ module.exports = async (Client, message) => {
     }
   }
 
+  // Set cooldown
   timestamps.set(message.author.id, now);
   setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
+  // Exectue command or fail
   try {
     command.execute(message, args);
   } catch (error) {
