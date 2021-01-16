@@ -3,8 +3,12 @@
   "version": "2.1.0",
   "description": "",
   "main": "index.js",
-  "dependencies": {},
-  "devDependencies": {},
+  "dependencies": {
+    "axios": "^0.21.1",
+    "discord.js": "^12.5.1",
+    "discord.js-commando": "github:discordjs/Commando",
+    "dotenv": "^8.2.0"
+  },
   "scripts": {
     "serve": "node index.js",
     "dev": "nodemon index.js"
