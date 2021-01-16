@@ -9,4 +9,7 @@ module.exports = Client => {
     .on("reconnecting", () => Client.logger.log("Bot reconnecting...", "log"))
     .on("error", e => Client.logger.log(e, "error"))
     .on("warn", info => Client.logger.log(info, "warn"));
+
+  Client.on("guildCreate", guild => Client.DB.getGuild(guild.id));
+  Client.on("guildDelete", guild => Client.DB.deleteGuild(guild.id));
 };
