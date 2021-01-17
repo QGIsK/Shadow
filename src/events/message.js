@@ -33,7 +33,8 @@ module.exports = class Message {
     const guildSettings = await this.client.getGuild(message.guild.id);
 
     //This shouldn't happen as guild is made on guildCreate event -- but just incase
-    const guild = !guildSettings ? await this.client.makeGuild(message.guild.id) : guildSettings;
+    const guild = !guildSettings ? await this.client.makeGuild(message.guild) : guildSettings;
+
     message.settings = guild.settings;
 
     // Check for discord invite
