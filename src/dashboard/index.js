@@ -23,6 +23,7 @@ module.exports = async Client => {
 
   app.use((req, res, next) => {
     req.client = Client;
+    req.logger = Client.logger.log;
     next();
   });
 
