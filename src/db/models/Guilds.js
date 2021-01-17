@@ -28,6 +28,21 @@ const GuildSettingsSchema = mongoose.Schema({
       default: false,
     },
   },
+  name: {
+    type: String,
+    required: true,
+  },
+  icon: {
+    type: String,
+    required: true,
+  },
+});
+
+GuildSettingsSchema.pre("save", function (next) {
+  if (this.isModified("icon"))
+    this.icon = `https://cdn.discordapp.com/icons/${this.guildID}/${this.icon}`;
+
+  next();
 });
 
 GuildSettingsSchema.plugin(timestamps);
