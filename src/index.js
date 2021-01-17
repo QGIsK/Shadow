@@ -41,7 +41,6 @@ class ShadowBot extends Discord.Client {
     this.regex = /(https?:\/\/)?(www\.)?(discord\.(gg|io|me|li|club)|discordapp\.com\/invite|discord\.com\/invite)\/.+[a-z]/gi;
     this.port = PORT;
 
-    this.cooldowns = new Discord.Collection();
     this.commands = new Discord.Collection();
   }
 
@@ -72,13 +71,23 @@ class ShadowBot extends Discord.Client {
       return false;
     }
   }
+
+  getGuild = id => this.DB.Guild.findOne({ guildID: id });
+  makeGuild = id => new this.DB.Guild({ guildID: id }).save();
+  deleteGuild = id => this.DB.Guild.findOneAndDelete({ guildID, id });
+
+  updatePrefix = (id, prefix) =>
+    this.DB.Guild.findOneAndUpdate({ guildID: id }, { settings: { prefix } });
+
+  blockInvites = (id, enable) =>
+    this.DB.Guild.findOneAndUpdate({ GuildID: id }, { settings: { blockInvites: enable } });
 }
+
 const init = async () => {
   const Client = new ShadowBot();
 
   Client.loadCommands();
 
-  require("./utils/Guild")(Client);
   require("./events")(Client);
 
   Client.login(BOT_TOKEN);
