@@ -6,7 +6,7 @@ const fs = require("fs");
 const Client = new Discord.Client();
 const Levels = require("discord-xp");
 
-const { CREATOR, DEFAULT_PREFIX, BOT_TOKEN, INVITE, MONGO_URI } = process.env;
+const { CREATOR, DEFAULT_PREFIX, BOT_TOKEN, INVITE, MONGO_URI, PORT } = process.env;
 
 async function start() {
   Levels.setURL(MONGO_URI);
@@ -19,6 +19,7 @@ async function start() {
   Client.inviteLink = INVITE;
   Client.Levels = Levels;
   Client.regex = /(https?:\/\/)?(www\.)?(discord\.(gg|io|me|li|club)|discordapp\.com\/invite|discord\.com\/invite)\/.+[a-z]/gi;
+  Client.port = PORT;
 
   // Command Handler
   Client.cooldowns = new Discord.Collection();
