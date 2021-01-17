@@ -44,7 +44,7 @@ class ShadowBot extends Discord.Client {
     this.commands = new Discord.Collection();
   }
 
-  loadCommands() {
+  async loadCommands() {
     commandGroups.map(x => {
       const commands = fs
         .readdirSync(`./src/commands/${x.group}`)
@@ -54,6 +54,18 @@ class ShadowBot extends Discord.Client {
         const command = require(`./commands/${x.group}/${h}`);
         this.commands.set(command.name, command);
       });
+    });
+  }
+
+  async loadEvents() {
+    const evtFiles = await fs.readdirSync("./src/events");
+    this.logger.log(`Loading a total of ${evtFiles.length} events.`, "log");
+    evtFiles.forEach(file => {
+      const eventName = file.split(".")[0];
+      this.logger.log(`Loading Event: ${eventName}`);
+      const event = new (require(`./events/${file}`))(this);
+      this.on(eventName, (...args) => event.run(...args));
+      delete require.cache[require.resolve(`./events/${file}`)];
     });
   }
 
@@ -87,8 +99,9 @@ const init = async () => {
   const Client = new ShadowBot();
 
   Client.loadCommands();
+  Client.loadEvents();
 
-  require("./events")(Client);
+  // require("./events")(Client);
 
   Client.login(BOT_TOKEN);
 };
