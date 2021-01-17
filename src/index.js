@@ -97,8 +97,13 @@ class ShadowBot extends Discord.Client {
   }
 
   getGuild = id => this.DB.Guild.findOne({ guildID: id });
-  makeGuild = id => new this.DB.Guild({ guildID: id }).save();
+  makeGuild = data =>
+    new this.DB.Guild({ guildID: data.id, icon: data.icon, name: data.name }).save();
   deleteGuild = id => this.DB.Guild.findOneAndDelete({ guildID: id });
+
+  updateGuild = data => {
+    this.DB.Guild.findOneAndUpdate({ guildID: data.id }, { icon: data.icon, name: data.name });
+  };
 
   updatePrefix = (id, prefix) =>
     this.DB.Guild.findOneAndUpdate({ guildID: id }, { settings: { prefix } });
