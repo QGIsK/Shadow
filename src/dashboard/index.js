@@ -105,14 +105,9 @@ module.exports = async Client => {
   app.get("/dashboard/", checkAuth, async (req, res) => {
     const clientGuilds = req.user.guilds;
 
-    const botGuilds = await req.client.getGuilds(clientGuilds.map(x => x.id));
-    console.log(botGuilds);
-    const guilds = botGuilds.forEach(async guild => {
-      await req.client.guilds.fetch(guild.guildID);
-    });
+    const guilds = await req.client.getGuilds(clientGuilds.map(x => x.id));
 
-    console.log(guilds);
-    return res.json({});
+    return res.json({ guilds });
   });
 
   app.get("/dashboard/:guildID", checkAuth, async (req, res) => {
