@@ -23,7 +23,10 @@
     "mongoose-timestamp": "^0.6.0",
     "morgan": "^1.10.0",
     "passport": "^0.4.1",
-    "passport-discord": "^0.1.4"
+    "passport-discord": "^0.1.4",
+    "simple-youtube-api": "^5.2.1",
+    "simpleyt": "^1.0.7",
+    "ytdl-core-discord": "^1.2.5"
   },
   "scripts": {
     "serve": "node src/index.js",
