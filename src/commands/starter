@@ -1,0 +1,8 @@
+module.exports = {
+  name: "",
+  description: "",
+  aliases: [],
+  creatorOnly: false,
+  guildOnly: true,
+  execute(Client, message, args) {}
+};
