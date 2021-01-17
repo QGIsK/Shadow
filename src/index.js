@@ -35,6 +35,11 @@ async function start() {
       name: "Levels",
       description: "Level commands",
     },
+    {
+      group: "settings",
+      name: "Bot Settings",
+      description: "Change bot settings",
+    },
   ];
 
   const getGroup = group =>
