@@ -24,12 +24,30 @@ async function start() {
   Client.cooldowns = new Discord.Collection();
   Client.commands = new Discord.Collection();
 
-  const commandFiles = fs.readdirSync("./src/commands").filter(file => file.endsWith(".js"));
+  const commandGroups = [
+    {
+      group: "util",
+      name: "Utilities",
+      description: "Utility commands",
+    },
+    {
+      group: "levels",
+      name: "Levels",
+      description: "Level commands",
+    },
+  ];
 
-  for (const file of commandFiles) {
-    const command = require(`./commands/${file}`);
-    Client.commands.set(command.name, command);
-  }
+  const getGroup = group =>
+    fs.readdirSync(`./src/commands/${group}`).filter(file => file.endsWith(".js"));
+
+  commandGroups.map(x => {
+    const commands = getGroup(x.group);
+
+    commands.map(h => {
+      const command = require(`./commands/${x.group}/${h}`);
+      Client.commands.set(command.name, command);
+    });
+  });
 
   require("./utils/Guild")(Client);
   require("./events")(Client);
