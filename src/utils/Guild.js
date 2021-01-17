@@ -5,7 +5,7 @@ module.exports = Client => {
   Client.deleteGuild = id => Client.DB.Guild.findOneAndDelete({ guildID, id });
 
   // Settings
-  Client.updatePrefix = (prefix, id) =>
+  Client.updatePrefix = (id, prefix) =>
     Client.DB.Guild.findOneAndUpdate({ guildID: id }, { settings: { prefix } });
 
   Client.blockInvites = id =>
