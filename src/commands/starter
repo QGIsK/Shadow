@@ -4,5 +4,5 @@ module.exports = {
   aliases: [],
   creatorOnly: false,
   guildOnly: true,
-  execute(Client, message) {}
+  execute(Client, message, args) {}
 };
