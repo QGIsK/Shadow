@@ -8,7 +8,7 @@ mongoose
   .connect(MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useFindAndModify: true,
+    useFindAndModify: false,
   })
   .then(_ => logger.log("MongoDB connected", "log"))
   .catch(e => {
