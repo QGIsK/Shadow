@@ -7,7 +7,10 @@ module.exports = Client => {
       require("../dashboard")(Client);
     })
     .on("reconnecting", () => Client.logger.log("Bot reconnecting...", "log"))
-    .on("error", e => Client.logger.log(e, "error"))
+    .on("error", e => {
+      Client.logger.log(e, "error");
+      process.exit(1);
+    })
     .on("warn", info => Client.logger.log(info, "warn"));
 
   Client.on("guildCreate", guild => Client.DB.getGuild(guild.id));
