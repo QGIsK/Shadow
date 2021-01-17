@@ -1,5 +1,3 @@
-const Discord = require("discord.js");
-
 const AntiSpam = require("discord-anti-spam");
 
 const antiSpam = new AntiSpam({
