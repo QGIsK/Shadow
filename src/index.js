@@ -3,65 +3,98 @@ require("dotenv").config();
 const Discord = require("discord.js");
 const fs = require("fs");
 
-const Client = new Discord.Client();
 const Levels = require("discord-xp");
 
 const { CREATOR, DEFAULT_PREFIX, BOT_TOKEN, INVITE, MONGO_URI, PORT } = process.env;
 
-async function start() {
-  Levels.setURL(MONGO_URI);
+const commandGroups = [
+  {
+    group: "util",
+    name: "Utilities",
+    description: "Utility commands",
+  },
+  {
+    group: "levels",
+    name: "Levels",
+    description: "Level commands",
+  },
+  {
+    group: "settings",
+    name: "Bot Settings",
+    description: "Change bot settings",
+  },
+];
 
-  //Client utils & variables
-  Client.DB = require("./db");
-  Client.logger = require("./utils/Logger");
-  Client.creator = CREATOR;
-  Client.defaultPrefix = DEFAULT_PREFIX;
-  Client.inviteLink = INVITE;
-  Client.Levels = Levels;
-  Client.regex = /(https?:\/\/)?(www\.)?(discord\.(gg|io|me|li|club)|discordapp\.com\/invite|discord\.com\/invite)\/.+[a-z]/gi;
-  Client.port = PORT;
+Levels.setURL(MONGO_URI);
 
-  // Command Handler
-  Client.cooldowns = new Discord.Collection();
-  Client.commands = new Discord.Collection();
+class ShadowBot extends Discord.Client {
+  constructor(options) {
+    super(options);
 
-  const commandGroups = [
-    {
-      group: "util",
-      name: "Utilities",
-      description: "Utility commands",
-    },
-    {
-      group: "levels",
-      name: "Levels",
-      description: "Level commands",
-    },
-    {
-      group: "settings",
-      name: "Bot Settings",
-      description: "Change bot settings",
-    },
-  ];
+    this.DB = require("./db");
+    this.logger = require("./utils/Logger");
 
-  const getGroup = group =>
-    fs.readdirSync(`./src/commands/${group}`).filter(file => file.endsWith(".js"));
+    this.creator = CREATOR;
+    this.defaultPrefix = DEFAULT_PREFIX;
+    this.inviteLink = INVITE;
+    this.Levels = Levels;
+    this.regex = /(https?:\/\/)?(www\.)?(discord\.(gg|io|me|li|club)|discordapp\.com\/invite|discord\.com\/invite)\/.+[a-z]/gi;
+    this.port = PORT;
 
-  commandGroups.map(x => {
-    const commands = getGroup(x.group);
+    this.cooldowns = new Discord.Collection();
+    this.commands = new Discord.Collection();
+  }
 
-    commands.map(h => {
-      const command = require(`./commands/${x.group}/${h}`);
-      Client.commands.set(command.name, command);
+  loadCommands() {
+    commandGroups.map(x => {
+      const commands = fs
+        .readdirSync(`./src/commands/${x.group}`)
+        .filter(file => file.endsWith(".js"));
+
+      commands.map(h => {
+        const command = require(`./commands/${x.group}/${h}`);
+        this.commands.set(command.name, command);
+      });
     });
-  });
+  }
+
+  async awaitReply(msg, question, limit = 60000) {
+    const filter = m => m.author.id === msg.author.id;
+    await msg.channel.send(question);
+    try {
+      const collected = await msg.channel.awaitMessages(filter, {
+        max: 1,
+        time: limit,
+        errors: ["time"],
+      });
+      return collected.first().content;
+    } catch (e) {
+      return false;
+    }
+  }
+}
+const init = async () => {
+  const Client = new ShadowBot();
+
+  Client.loadCommands();
 
   require("./utils/Guild")(Client);
   require("./events")(Client);
 
   Client.login(BOT_TOKEN);
-}
+};
 
-start();
+init();
+
+String.prototype.toProperCase = function () {
+  return this.replace(/([^\W_]+[^\s-]*) */g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+};
+
+Array.prototype.random = function () {
+  return this[Math.floor(Math.random() * this.length)];
+};
 
 process.on("unhandledRejection", err => {
   console.error(err);
