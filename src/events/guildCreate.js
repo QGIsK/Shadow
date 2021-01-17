@@ -4,6 +4,6 @@ module.exports = class GuildCreate {
   }
 
   async run(guild) {
-    await this.client.makeGuild({ guildID: guild.id, icon: guild.icon, name: guild.name });
+    await this.client.makeGuild(guild);
   }
 };

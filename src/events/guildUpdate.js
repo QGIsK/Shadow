@@ -3,7 +3,7 @@ module.exports = class GuildCreate {
     this.client = client;
   }
 
-  async run(guild) {
-    await this.client.updateGuild({ data: { id: guild.id, icon: guild.icon, name: guild.name } });
+  async run(_, guild) {
+    await this.client.updateGuild(guild);
   }
 };

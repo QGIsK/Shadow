@@ -96,22 +96,31 @@ class ShadowBot extends Discord.Client {
     }
   }
 
-  getGuild = id => this.DB.Guild.findOne({ guildID: id });
-  makeGuild = data =>
-    new this.DB.Guild({ guildID: data.id, icon: data.icon, name: data.name }).save();
-  deleteGuild = id => this.DB.Guild.findOneAndDelete({ guildID: id });
+  //Getters
+  getGuild = async id => await this.DB.Guild.findOne({ guildID: id });
+  getGuilds = async guilds => await this.DB.Guild.find({ guildID: { $in: guilds } });
 
-  updateGuild = data => {
-    this.DB.Guild.findOneAndUpdate({ guildID: data.id }, { icon: data.icon, name: data.name });
+  //Create
+  makeGuild = guild =>
+    new this.DB.Guild({ guildID: guild.id, icon: guild.icon, name: guild.name }).save();
+
+  // Update
+  updateGuild = async guild => {
+    await this.DB.Guild.findOneAndUpdate(
+      { guildID: guild.id },
+      { icon: guild.icon, name: guild.name }
+    );
   };
 
-  updatePrefix = (id, prefix) =>
-    this.DB.Guild.findOneAndUpdate({ guildID: id }, { settings: { prefix } });
+  //Changes
+  changePrefix = async (id, prefix) =>
+    await this.DB.Guild.findOneAndUpdate({ guildID: id }, { settings: { prefix } });
 
-  blockInvites = (id, enable) =>
-    this.DB.Guild.findOneAndUpdate({ GuildID: id }, { settings: { blockInvites: enable } });
+  blockInvites = async (id, enable) =>
+    await this.DB.Guild.findOneAndUpdate({ GuildID: id }, { settings: { blockInvites: enable } });
 
-  getGuilds = guilds => this.DB.Guild.find({ guildID: { $in: guilds } });
+  //Delete
+  deleteGuild = async id => await this.DB.Guild.findOneAndDelete({ guildID: id });
 }
 
 const init = async () => {
