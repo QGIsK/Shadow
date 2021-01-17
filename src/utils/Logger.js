@@ -29,7 +29,7 @@ exports.log = (content, type = "log") => {
       return console.log(`${timestamp} ${chalk.cyan(type.toUpperCase())} ${content} `);
     }
     default:
-      throw new TypeError("Wrong type of logger kid");
+      throw new TypeError("Wrong type of logger");
   }
 };
 
