@@ -14,12 +14,16 @@
     "discord.js-commando": "github:discordjs/Commando",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-session": "^1.17.1",
     "helmet": "^4.3.1",
+    "memorystore": "^1.6.4",
     "moment": "^2.29.1",
     "mongodb": "^3.6.3",
     "mongoose": "^5.11.12",
     "mongoose-timestamp": "^0.6.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "passport": "^0.4.1",
+    "passport-discord": "^0.1.4"
   },
   "scripts": {
     "serve": "node src/index.js",
