@@ -1,7 +1,7 @@
 module.exports = {
   name: "prefix",
   description: "Set prefix",
-  aliases: [],
+  aliases: ["setprefix"],
   creatorOnly: false,
   guildOnly: true,
   userPermissions: ["ADMINISTRATOR"],
