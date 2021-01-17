@@ -14,7 +14,7 @@ module.exports = async Client => {
 
   app.use(helmet());
   app.use(cors());
-  app.use(morgan("dev"));
+  app.use(morgan(":method :url :response-time"));
   app.use(express.json());
 
   app.use(
