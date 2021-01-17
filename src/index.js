@@ -5,7 +5,16 @@ const fs = require("fs");
 
 const Levels = require("discord-xp");
 
-const { CREATOR, DEFAULT_PREFIX, BOT_TOKEN, INVITE, MONGO_URI, PORT } = process.env;
+const {
+  CREATOR,
+  DEFAULT_PREFIX,
+  BOT_TOKEN,
+  BOT_ID,
+  BOT_SECRET,
+  INVITE,
+  MONGO_URI,
+  PORT,
+} = process.env;
 
 const commandGroups = [
   {
@@ -40,6 +49,9 @@ class ShadowBot extends Discord.Client {
     this.Levels = Levels;
     this.regex = /(https?:\/\/)?(www\.)?(discord\.(gg|io|me|li|club)|discordapp\.com\/invite|discord\.com\/invite)\/.+[a-z]/gi;
     this.port = PORT;
+
+    this.id = BOT_ID;
+    this.secret = BOT_SECRET;
 
     this.commands = new Discord.Collection();
   }
@@ -93,6 +105,8 @@ class ShadowBot extends Discord.Client {
 
   blockInvites = (id, enable) =>
     this.DB.Guild.findOneAndUpdate({ GuildID: id }, { settings: { blockInvites: enable } });
+
+  getGuilds = guilds => this.DB.Guild.find({ guildID: { $in: guilds } });
 }
 
 const init = async () => {
