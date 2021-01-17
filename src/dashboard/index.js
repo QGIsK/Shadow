@@ -1,16 +1,15 @@
-const Express = require("express");
+const express = require("express");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const path = require("path");
 const cors = require("cors");
 
 module.exports = async Client => {
-  const app = Express();
+  const app = express();
 
   app.use(helmet());
   app.use(cors());
   app.use(morgan("dev"));
-  app.use(expressSanitizer());
   app.use(express.json());
 
   app.use("/static", express.static("resources/static"));
@@ -30,8 +29,6 @@ module.exports = async Client => {
   app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname + "/resources/views/index.html"));
   });
-
-  app.use("/api", require("./routes/"));
 
   app.listen(Client.port, Client.logger.log("Website is ready", "log"));
 };
