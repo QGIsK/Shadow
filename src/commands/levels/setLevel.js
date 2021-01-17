@@ -9,7 +9,10 @@ module.exports = {
     const target = message.mentions.users.first() || message.author; // Grab the target.
 
     // Check for arguments if second argument exists they're updating other users level if not update their own
-    const level = args[1] ?? args[0];
+    const level = parseInt(args[1] ?? args[0]);
+
+    //Check if number is number
+    if (isNaN(level)) return message.reply("Level has to be a number");
 
     Client.Levels.appendLevel(target, message.guild.id, level).catch(e => console.log(e));
 
