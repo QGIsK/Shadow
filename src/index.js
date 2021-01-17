@@ -86,7 +86,7 @@ class ShadowBot extends Discord.Client {
 
   getGuild = id => this.DB.Guild.findOne({ guildID: id });
   makeGuild = id => new this.DB.Guild({ guildID: id }).save();
-  deleteGuild = id => this.DB.Guild.findOneAndDelete({ guildID, id });
+  deleteGuild = id => this.DB.Guild.findOneAndDelete({ guildID: id });
 
   updatePrefix = (id, prefix) =>
     this.DB.Guild.findOneAndUpdate({ guildID: id }, { settings: { prefix } });
@@ -100,8 +100,6 @@ const init = async () => {
 
   Client.loadCommands();
   Client.loadEvents();
-
-  // require("./events")(Client);
 
   Client.login(BOT_TOKEN);
 };
