@@ -67,6 +67,9 @@ module.exports = async (Client, message) => {
   if (command.creatorOnly && message.author.id !== Client.creator)
     return message.channel.send("This command is only for the creator.");
 
+  if (!message.member.hasPermission(command.userPermissions))
+    return message.channel.send("You don't have permissions to use this");
+
   if (command.args && !args.length) {
     let reply = `You didn't provide any arguments, ${message.author}!`;
 
